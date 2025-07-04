@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>💜 Magical Name Picker & Timer</title>
+  <style>
+    /* --------- Base Styles --------- */
+    body {
+      font-family: 'Segoe UI', 'Comic Sans MS', sans-serif;
+      background: linear-gradient(135deg, #8e2de2, #4a00e0);
+      color: white;
+      margin: 0 auto;
+      max-width: 720px;
+      padding: 40px 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.4rem;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #f9d423, #ff4e50);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff99ff; }
+      to   { text-shadow: 0 0 25px #ffff66, 0 0 10px #ff3399; }
+    }
+
+    fieldset {
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 25px 0;
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    legend {
+      font-weight: bold;
+      font-size: 1.25rem;
+      color: #ffc9ec;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 500;
+      color: #ffe2ff;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 2px solid #f9a8ff;
+      background: rgba(255, 255, 255, 0.95);
+      color: #4a007d;
+      font-weight: bold;
+    }
+
+    button {
+      background: linear-gradient(to right, #ff5f6d, #ffc371);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
+      margin-top: 15px;
+      margin-right: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 20px #f9d423;
+    }
+
+    #selectedName {
+      font-size: 1.8rem;
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+      color: #ffea00;
+      text-shadow: 0 0 10px #ff00c8;
+      animation: pop 0.4s ease-in-out;
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    #timerDisplay {
+      font-size: 2.4rem;
+      text-align: center;
+      font-weight: bold;
+      color: #ffffff;
+      background: linear-gradient(to right, #ffffff, #f3ec78, #af4261);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { opacity: 1; }
+      to   { opacity: 0.6; }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.95rem;
+      color: #e0b3ff;
+    }
+
+    footer::after {
+      content: " 💜";
+      color: #ff99ff;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💜 Magical Name Picker 💜</h1>
+
+  <fieldset>
+    <legend>🧍 Enter Names</legend>
+    <div id="nameInputs"></div>
+    <button id="addBtn">➕ Add Name</button>
+    <button id="pickBtn">🎯 Pick Random Name</button>
+    <p id="selectedName"></p>
+  </fieldset>
+
+  <fieldset>
+    <legend>⏳ 5‑Minute Countdown</legend>
+    <div id="timerDisplay">05:00</div>
+    <button id="startBtn">▶ Start Timer</button>
+    <button id="stopBtn">⏹ Stop Timer</button>
+  </fieldset>
+
+  <footer>created by Sajin with</footer>
+
+  <script>
+    let currentCount = 0;
+    const maxNames = 10;
+    const nameInputsDiv = document.getElementById('nameInputs');
+
+    function addNameField() {
+      if (currentCount >= maxNames) return;
+      currentCount++;
+      const label = document.createElement('label');
+      label.textContent = `Name ${currentCount}:`;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.id = `name${currentCount}`;
+
+      label.appendChild(input);
+      nameInputsDiv.appendChild(label);
+    }
+
+    // Initialize with 4 name fields
+    for (let i = 0; i < 4; i++) addNameField();
+
+    document.getElementById('addBtn').addEventListener('click', () => {
+      if (currentCount < maxNames) {
+        addNameField();
+      } else {
+        alert("✨ You can only enter up to 10 names!");
+      }
+    });
+
+    document.getElementById('pickBtn').addEventListener('click', () => {
+      const names = [];
+      for (let i = 1; i <= currentCount; i++) {
+        const val = document.getElementById(`name${i}`).value.trim();
+        if (val) names.push(val);
+      }
+      const output = document.getElementById('selectedName');
+      if (names.length) {
+        const chosen = names[Math.floor(Math.random() * names.length)];
+        output.textContent = `🎉 ${chosen} 🎉`;
+        output.style.animation = 'none';
+        void output.offsetWidth;
+        output.style.animation = 'pop 0.4s ease-in-out';
+      } else {
+        output.textContent = '🚫 Please enter at least one name!';
+      }
+    });
+
+    // Timer
+    let remaining = 300;
+    let interval = null;
+
+    function formatTime(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function updateDisplay() {
+      document.getElementById('timerDisplay').textContent = formatTime(remaining);
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      if (interval) return;
+      interval = setInterval(() => {
+        if (remaining > 0) {
+          remaining--;
+          updateDisplay();
+        } else {
+          clearInterval(interval);
+          interval = null;
+          alert("⏰ Time's up!");
+        }
+      }, 1000);
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', () => {
+      clearInterval(interval);
+      interval = null;
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>
